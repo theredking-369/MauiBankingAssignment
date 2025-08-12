@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MauiBankingExercise.Models;
 
 namespace MauiBankingExercise.Services
 {
@@ -20,7 +21,15 @@ namespace MauiBankingExercise.Services
 
         public BankingDatabaseService()
         {
-                
+            _dbConnection = new SQLiteConnection(GetDatabasePath());
+            BankingSeeder.Seed(_dbConnection);
         }
+
+        public List<Customer> GetAllCustomers()
+        {
+            return _dbConnection.Table<Customer>().ToList();
+        }
+
+
     }
 }
