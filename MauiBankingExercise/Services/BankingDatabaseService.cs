@@ -10,6 +10,17 @@ namespace MauiBankingExercise.Services
 {
     public class BankingDatabaseService
     {
+        private static BankingDatabaseService _instance;
+
+        public static BankingDatabaseService GetInstance()
+        {
+            if(_instance == null)
+            {
+                _instance = new BankingDatabaseService();
+            }
+            return _instance;
+        }
+
         private SQLiteConnection _dbConnection;
 
         public string GetDatabasePath()

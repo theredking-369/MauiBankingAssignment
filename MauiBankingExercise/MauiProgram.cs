@@ -1,4 +1,5 @@
-﻿using MauiBankingExercise.Services;
+﻿using CommunityToolkit.Maui;
+using MauiBankingExercise.Services;
 using MauiBankingExercise.ViewModels;
 using MauiBankingExercise.Views;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ namespace MauiBankingExercise
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
