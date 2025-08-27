@@ -26,10 +26,12 @@ namespace MauiBankingExercise
             builder.Services.AddSingleton<BankingDatabaseService>();
             builder.Services.AddSingleton<AllCustomersViewModel>();
             builder.Services.AddSingleton<SingleCustomerViewModel>();
+            builder.Services.AddSingleton<TransactionViewModel>();
 
 
             builder.Services.AddTransient<AllCustomersView>();
             builder.Services.AddTransient<SingleCustomerView>();
+            builder.Services.AddTransient<TransactionView>();
 
             return builder.Build();
         }

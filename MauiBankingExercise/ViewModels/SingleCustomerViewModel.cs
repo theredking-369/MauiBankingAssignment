@@ -10,9 +10,10 @@ using System.Windows.Input;
 
 namespace MauiBankingExercise.ViewModels
 {
+    [QueryProperty(nameof(CustomerId), nameof(CustomerId))]
     public class SingleCustomerViewModel : BaseViewModel
     {
-        public ICommand AccountSelected { get; }
+        public ICommand AccountSelectedCommand { get; set; }
         private BankingDatabaseService _bds;
 
         private Customer? _customer;
@@ -36,6 +37,7 @@ namespace MauiBankingExercise.ViewModels
             { 
                 _customerId = value;
                 OnPropertyChanged();
+                GetCustomerData();
             }
         }
 
@@ -51,6 +53,57 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
+        private Account _selectedAccount;
 
+        public Account? SelectedAccount
+        {
+            get { return _selectedAccount; }
+            set 
+            { 
+                _selectedAccount = value;
+            }
+        }
+
+        private void LoadAccounts()
+        {
+            var accounts = _bds.GetAccountsByCustomerId(CustomerId);
+            CustomerAccounts.Clear();
+            foreach(var account in accounts)
+            {
+                CustomerAccounts.Add(account);
+            }
+        }
+        private void GetCustomerData()
+        {
+            Customer = _bds.GetCustomerByID(CustomerId);
+            LoadAccounts();
+        }
+
+        public SingleCustomerViewModel(BankingDatabaseService bds)
+        {
+            _bds = bds;
+            AccountSelectedCommand = new Command(AccountSelected);
+        }
+
+        private async void AccountSelected(object obj)
+        {
+            var param = new ShellNavigationQueryParameters()
+            {
+                {"AccountId", SelectedAccount.AccountId },
+                {"CustomerId", CustomerId }
+                
+            };
+            await AppShell.Current.GoToAsync($"transactions", param);
+        }
+
+        public override void OnAppearing()
+        {
+            base.OnAppearing();
+            SelectedAccount = null;
+            if (CustomerId > 0 && Customer == null)
+            {
+                GetCustomerData();
+            }
+        }
     }
 }

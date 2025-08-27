@@ -1,9 +1,19 @@
+using MauiBankingExercise.ViewModels;
 namespace MauiBankingExercise.Views;
 
-public partial class SingleCustomerView : ContentPage
+public partial class SingleCustomerView : BasePage
 {
-	public SingleCustomerView()
+	private SingleCustomerViewModel _vm;
+	public SingleCustomerView(SingleCustomerViewModel vm)
 	{
 		InitializeComponent();
+		_vm = vm;
+		BindingContext = vm;
 	}
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _vm.OnAppearing();
+    }
 }
