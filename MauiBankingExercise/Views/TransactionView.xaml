@@ -5,7 +5,7 @@
              xmlns:views="clr-namespace:MauiBankingExercise.Views"
              xmlns:viewmodels="clr-namespace:MauiBankingExercise.ViewModels"
              xmlns:models="clr-namespace:MauiBankingExercise.Models"
-             Title="{Binding AccountId}" x:DataType="viewmodels:TransactionViewModel">
+             Title="{Binding SelectedAccount.AccountNumber, StringFormat='Account: {0}'}" x:DataType="viewmodels:TransactionViewModel">
     <ScrollView>
         <CollectionView>
             <CollectionView.ItemTemplate>

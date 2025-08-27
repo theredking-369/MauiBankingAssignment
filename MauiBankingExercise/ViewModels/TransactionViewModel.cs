@@ -11,6 +11,8 @@ using System.Windows.Input;
 namespace MauiBankingExercise.ViewModels
 {
     [QueryProperty(nameof(CustomerId), nameof(CustomerId))]
+    [QueryProperty(nameof(AccountId), nameof(AccountId))]
+
     public class TransactionViewModel : BaseViewModel
     {
         public ICommand AddTransactionCommand { get; }
@@ -22,7 +24,13 @@ namespace MauiBankingExercise.ViewModels
         public int CustomerId
         {
             get { return _customerId; }
-            set { _customerId = value; }
+            set { _customerId = value;
+                OnPropertyChanged();
+                if (_customerId > 0 && _accountId > 0)
+                {
+                    GetAccountAndTransactions();
+                }
+            }
         }
 
         private int _accountId;
@@ -30,15 +38,24 @@ namespace MauiBankingExercise.ViewModels
         public int AccountId
         {
             get { return _accountId; }
-            set { _accountId = value; }
+            set { _accountId = value;
+                OnPropertyChanged();
+                if (_customerId > 0 && _accountId > 0)
+                {
+                    GetAccountAndTransactions();
+                }
+            }
         }
 
-        private Account? _selectedAccount;
+        private Account _selectedAccount;
 
-        public Account? SelectedAccount
+        public Account SelectedAccount
         {
             get { return _selectedAccount; }
-            set { _selectedAccount = value; }
+            set { _selectedAccount = value;
+                OnPropertyChanged();
+                LoadTransactions();
+            }
         }
 
         private decimal _transactionAmount;
@@ -46,7 +63,9 @@ namespace MauiBankingExercise.ViewModels
         public decimal TransactionAmount
         {
             get { return _transactionAmount; }
-            set { _transactionAmount = value; }
+            set { _transactionAmount = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _selectedTransactionType;
@@ -54,7 +73,9 @@ namespace MauiBankingExercise.ViewModels
         public string SelectedTransactionType
         {
             get { return _selectedTransactionType; }
-            set { _selectedTransactionType = value; }
+            set { _selectedTransactionType = value;
+                OnPropertyChanged();
+            }
         }
 
         public ObservableCollection<string> TransactionTypes { get; set; } = new ObservableCollection<string> { "Deposit", "Withdrawal" };
@@ -65,8 +86,7 @@ namespace MauiBankingExercise.ViewModels
             if (AccountId > 0)
             {
 
-                var accounts = _bds.GetAccountsByCustomerId(CustomerId);
-                SelectedAccount = accounts.FirstOrDefault(x => x.AccountId == AccountId);
+                SelectedAccount = _bds.GetAccountById(AccountId);
             }
 
 
@@ -112,7 +132,10 @@ namespace MauiBankingExercise.ViewModels
         public override void OnAppearing()
         {
             base.OnAppearing();
-            SelectedAccount = null;
+            if (CustomerId > 0 && AccountId > 0 && SelectedAccount == null)
+            {
+                GetAccountAndTransactions();
+            }
         }
     } 
 }

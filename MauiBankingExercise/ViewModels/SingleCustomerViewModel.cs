@@ -11,6 +11,7 @@ using System.Windows.Input;
 namespace MauiBankingExercise.ViewModels
 {
     [QueryProperty(nameof(CustomerId), "CustomerId")]
+    [QueryProperty(nameof(SelectedAccount), "SelectedAccount")]
     public class SingleCustomerViewModel : BaseViewModel
     {
         public ICommand AccountSelectedCommand { get; set; }
@@ -53,15 +54,16 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        private Account? _selectedAccount;
+        private Account _selectedAccount;
 
-        public Account? SelectedAccount
+        public Account SelectedAccount
         {
             get { return _selectedAccount; }
             set 
             { 
                 _selectedAccount = value;
                 OnPropertyChanged();
+               
             }
         }
 
@@ -89,17 +91,13 @@ namespace MauiBankingExercise.ViewModels
 
         private async void AccountSelected(object obj)
         {
-           
-                var param = new ShellNavigationQueryParameters()
+            var param = new ShellNavigationQueryParameters()
             {
                 {"AccountId", SelectedAccount.AccountId },
                 {"CustomerId", CustomerId }
 
             };
-                await AppShell.Current.GoToAsync($"transactions", param);
-
-            
-            
+                await AppShell.Current.GoToAsync($"transactions", param); 
         }
 
         public override void OnAppearing()
