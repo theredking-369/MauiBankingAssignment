@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MauiBankingExercise.ViewModels
 {
-    internal class TransactionViewModel
+    public class TransactionViewModel
     {
     }
 }
