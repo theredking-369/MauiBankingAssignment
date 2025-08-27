@@ -22,7 +22,9 @@
 
             <CollectionView ItemsSource="{Binding CustomerAccounts}" 
                             SelectionMode="Single" 
-                            SelectedItem="{Binding AccountSelectedCommand}">
+                            SelectedItem="{Binding SelectedAccount}"
+                            SelectionChangedCommand="{Binding AccountSelectedCommand}">
+                            
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Account">
                         <Border Margin="5" 

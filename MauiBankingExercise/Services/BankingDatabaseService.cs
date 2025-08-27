@@ -72,5 +72,12 @@ namespace MauiBankingExercise.Services
 
             return account;
         }
+
+        
+
+        public void AddTransaction(Transaction transaction)
+        {
+            _dbConnection.Insert(transaction);
+        }
     }
 }

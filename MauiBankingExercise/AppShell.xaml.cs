@@ -15,6 +15,9 @@ namespace MauiBankingExercise
             Routing.RegisterRoute("allcustomers", typeof(AllCustomersView));
             Routing.RegisterRoute("singlecustomer", typeof(SingleCustomerView));
             Routing.RegisterRoute("transactions", typeof(TransactionView));
+            Routing.RegisterRoute("addtransaction", typeof(AddTransactionView));
+
+
 
 
         }
