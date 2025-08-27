@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace MauiBankingExercise.ViewModels
 {
-    [QueryProperty(nameof(CustomerId), nameof(CustomerId))]
+    [QueryProperty(nameof(CustomerId), "CustomerId")]
     public class SingleCustomerViewModel : BaseViewModel
     {
         public ICommand AccountSelectedCommand { get; set; }
@@ -41,9 +41,9 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        private ObservableCollection<Account> _customerAccounts;
+        private ObservableCollection<Account> _customerAccounts = new ObservableCollection<Account>();
 
-        public ObservableCollection<Account> CustomerAccounts
+        public ObservableCollection<Account> CustomerAccounts 
         {
             get { return _customerAccounts; }
             set 
@@ -53,7 +53,7 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        private Account _selectedAccount;
+        private Account? _selectedAccount;
 
         public Account? SelectedAccount
         {
@@ -61,6 +61,7 @@ namespace MauiBankingExercise.ViewModels
             set 
             { 
                 _selectedAccount = value;
+                OnPropertyChanged();
             }
         }
 
@@ -83,17 +84,22 @@ namespace MauiBankingExercise.ViewModels
         {
             _bds = bds;
             AccountSelectedCommand = new Command(AccountSelected);
+
         }
 
         private async void AccountSelected(object obj)
         {
-            var param = new ShellNavigationQueryParameters()
+           
+                var param = new ShellNavigationQueryParameters()
             {
                 {"AccountId", SelectedAccount.AccountId },
                 {"CustomerId", CustomerId }
-                
+
             };
-            await AppShell.Current.GoToAsync($"transactions", param);
+                await AppShell.Current.GoToAsync($"transactions", param);
+
+            
+            
         }
 
         public override void OnAppearing()

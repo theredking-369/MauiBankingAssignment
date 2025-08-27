@@ -13,7 +13,7 @@ namespace MauiBankingExercise.ViewModels
 {
     public class AllCustomersViewModel : BaseViewModel
     {
-        public ICommand CustomerSelectedCommand { get; set; }
+        public ICommand CustomerSelectedCommand { get; }
         private BankingDatabaseService _bds;
 
         private ObservableCollection<Customer> _customers = new ObservableCollection<Customer>();
@@ -28,7 +28,7 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        private Customer _selectedCustomer;
+        private Customer? _selectedCustomer;
 
         public Customer? SelectedCustomer
         {
@@ -48,6 +48,7 @@ namespace MauiBankingExercise.ViewModels
         {
             _bds = bds;
             CustomerSelectedCommand = new Command(CustomerSelected);
+
         }
 
         private async void CustomerSelected(object obj)
@@ -60,6 +61,8 @@ namespace MauiBankingExercise.ViewModels
                 };
                 await AppShell.Current.GoToAsync($"singlecustomer", param);
             }
+           
+            
         }
 
         private void LoadCustomers()
@@ -85,6 +88,7 @@ namespace MauiBankingExercise.ViewModels
             base.OnAppearing();
             LoadCustomers();
             SelectedCustomer = null;
+            
         }
     }
 }
