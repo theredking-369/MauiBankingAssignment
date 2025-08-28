@@ -6,13 +6,39 @@
              xmlns:viewmodels="clr-namespace:MauiBankingExercise.ViewModels"
              xmlns:models="clr-namespace:MauiBankingExercise.Models"
              Title="{Binding SelectedAccount.AccountNumber, StringFormat='Account: {0}'}" x:DataType="viewmodels:TransactionViewModel">
-    <ScrollView>
-        <CollectionView>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Transaction">
-                    <Label Text="{Binding Account}"/>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </ScrollView>
+    <views:BasePage.Resources>
+        <Style TargetType="Border">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="LightSkyBlue" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </views:BasePage.Resources>
+
+    <CollectionView ItemsSource= "{Binding Transactions}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:Transaction">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                        ColumnDefinitions="*,Auto">
+
+                <Label Text="{Binding Amount}" Grid.Row="0"/>
+                <Label Text="{Binding TransactionDate}" Grid.Row="1"/>
+                <Label Text="{Binding TransactionTypeId}" Grid.Row="2"/>
+                <Label Text="{Binding Description}" Grid.Row="4"/>
+                </Grid>
+                
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+        
+    </CollectionView>
+
 </views:BasePage>

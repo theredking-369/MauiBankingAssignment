@@ -94,7 +94,7 @@ namespace MauiBankingExercise.ViewModels
             var param = new ShellNavigationQueryParameters()
             {
                 {"AccountId", SelectedAccount.AccountId },
-                {"CustomerId", CustomerId }
+                {"CustomerId",CustomerId }
 
             };
                 await AppShell.Current.GoToAsync($"transactions", param); 
@@ -103,7 +103,6 @@ namespace MauiBankingExercise.ViewModels
         public override void OnAppearing()
         {
             base.OnAppearing();
-            SelectedAccount = null;
             if (CustomerId > 0 && Customer == null)
             {
                 GetCustomerData();

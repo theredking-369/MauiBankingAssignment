@@ -78,8 +78,32 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        public ObservableCollection<string> TransactionTypes { get; set; } = new ObservableCollection<string> { "Deposit", "Withdrawal" };
-        public ObservableCollection<Transaction> Transactions { get; set; } = new ObservableCollection<Transaction>();
+        private ObservableCollection<TransactionType> _transactionTypes = new ObservableCollection<TransactionType>();
+
+        public ObservableCollection<TransactionType> TransactionTypes
+        {
+            get { return _transactionTypes; }
+            set
+            {
+                _transactionTypes = value;
+                OnPropertyChanged();
+
+            }
+        }
+
+        private ObservableCollection<Transaction> _transactions = new ObservableCollection<Transaction>();
+
+        public ObservableCollection<Transaction> Transactions
+        {
+            get { return _transactions; }
+            set 
+            { 
+                _transactions = value;
+                OnPropertyChanged();
+
+            }
+        }
+
 
         private void GetAccountAndTransactions()
         {
@@ -122,7 +146,8 @@ namespace MauiBankingExercise.ViewModels
                 {"CustomerId", CustomerId },
                 {"SelectedAccount", SelectedAccount },
                 {"TransactionAmount", TransactionAmount },
-                {"SelectedTransactionType", SelectedTransactionType }
+                {"SelectedTransactionType", SelectedTransactionType },
+                {"Transactions", Transactions }
 
             };
             await AppShell.Current.GoToAsync($"addtransaction", param);
