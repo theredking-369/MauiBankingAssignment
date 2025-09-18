@@ -13,6 +13,7 @@ namespace MauiBankingExercise.ViewModels
     [QueryProperty(nameof(SelectedAccount), nameof(SelectedAccount))]
     [QueryProperty(nameof(AccountId), nameof(AccountId))]
     [QueryProperty(nameof(CustomerId), nameof(CustomerId))]
+    [QueryProperty(nameof(SelectedTransaction), "SelectedTransaction" )]
     public class AddTransactionViewModel : BaseViewModel
     {
 
@@ -28,9 +29,12 @@ namespace MauiBankingExercise.ViewModels
 
         private async Task SaveChanges()
         {
-            _bds.AddTransaction(SelectedTransaction);
-            await Shell.Current.GoToAsync("..");
+            _bds.UpdateTransaction(SelectedTransaction);
+            await AppShell.Current.GoToAsync("..");
         }
+
+        
+
 
         private int _customerId;
 

@@ -942,6 +942,7 @@ namespace MauiBankingExercise.Services
                 Amount = 2000m,
                 Description = "Initial deposit"
             },
+        
             new Transaction
             {
                 TransactionTypeId = transactionTypes[0].TransactionTypeId,

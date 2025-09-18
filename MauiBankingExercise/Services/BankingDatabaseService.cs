@@ -7,11 +7,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+
 
 namespace MauiBankingExercise.Services
 {
     public class BankingDatabaseService
     {
+        private SQLiteConnection _dbConnection;
+        
         private static BankingDatabaseService _instance;
 
         public static BankingDatabaseService GetInstance()
@@ -23,25 +27,63 @@ namespace MauiBankingExercise.Services
             return _instance;
         }
 
-        private SQLiteConnection _dbConnection;
+        
 
         public string GetDatabasePath()
         {
             string filename = "banking.db";
             string pathToDb = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             return Path.Combine(pathToDb, filename);
+           
         }
+
+        public void DeleteDatabase()
+        {
+            var dbPath = GetDatabasePath();
+            if (File.Exists(dbPath))
+            {
+                File.Delete(dbPath);
+            }
+        }
+
+       /* public void SaveData()
+        {
+            string jsonResult = JsonSerializer.Serialize(_transactions);
+            string path = GetDatabasePath();
+
+            File.WriteAllText(path, jsonResult);
+
+        }*/
 
         public BankingDatabaseService()
         {
+            //DeleteDatabase();
             _dbConnection = new SQLiteConnection(GetDatabasePath());
             BankingSeeder.Seed(_dbConnection);
         }
+
+        public List<Account> GetAllAccounts()
+        {
+            return _dbConnection.Table<Account>().ToList();
+        }
+
+        /*public List<Bank> GetAllBanks()
+        {
+            return _dbConnection.Table<Bank>.ToList();
+        }*/
 
         public List<Customer> GetAllCustomers()
         {
             return _dbConnection.Table<Customer>().ToList();
         }
+
+        public List<Transaction> GetAllTransactions()
+        {
+            return _dbConnection.Table<Transaction>().ToList();
+        }
+
+
+        
 
         public Customer? GetCustomerByID(int id)
         {
@@ -74,16 +116,26 @@ namespace MauiBankingExercise.Services
             return account;
         }
 
-        public List<Transaction> _transactions = new List<Transaction>();
+        public List<Transaction> GetTransactionsByAccountId(int accountId)
+        {
+            var transactions = _dbConnection.Table<Transaction>()
+                .Where(x => x.AccountId == accountId)
+                .ToList();
+
+            foreach(var transaction in transactions)
+            {
+                _dbConnection.GetChildren(transaction);
+            }
+            return transactions;
+        }
+
+
         public List<TransactionType> GetTransactionTypes()
         {
             return  _dbConnection.Table<TransactionType>().ToList();
         }
 
-        public List<Account> GetAccounts()
-        {
-            return _dbConnection.Table<Account>().ToList();
-        }
+        
 
         public string GetAccountNumber(int accountId)
         {
@@ -93,22 +145,37 @@ namespace MauiBankingExercise.Services
             return account?.AccountNumber; // will return null if not found
         }
 
-        public Transaction GetTransactionById(int id)
-        {
-            var uniqueTransaction = _transactions.Where(x => x.TransactionId == id).FirstOrDefault();
-            return uniqueTransaction;
-        }
-        public void AddTransaction(Transaction transaction)
+        
+        /*public Task UpTransaction(Transaction transaction)
         {
            
+            if(transaction.TransactionId > 0)
+            {
                 var uniqueTransaction = GetTransactionById(transaction.TransactionId);
                 int pos = _transactions.IndexOf(uniqueTransaction);
 
                 _transactions[pos] = transaction;
-            
-            
-            
+            }
+            else
+            {
+                int id = _transactions.Count > 0 ? _transactions.Max(x => x.TransactionId) + 1 : 1;
+                transaction.TransactionId = id;
+                _transactions.Add(transaction);
+            }
+
+            SaveData();
+            return Task.CompletedTask();            
+        }*/
+
+        public void AddTransaction(Transaction transaction)
+        {
             _dbConnection.Insert(transaction);
+            
+        }
+
+        public void UpdateTransaction(Transaction transaction)
+        {
+            _dbConnection.Update(transaction);
         }
     }
 }

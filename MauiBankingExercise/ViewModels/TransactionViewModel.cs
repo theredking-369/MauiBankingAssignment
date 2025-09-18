@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace MauiBankingExercise.ViewModels
 {
-    [QueryProperty(nameof(CustomerId), nameof(CustomerId))]
+    //[QueryProperty(nameof(CustomerId), nameof(CustomerId))]
     [QueryProperty(nameof(AccountId), nameof(AccountId))]
 
     public class TransactionViewModel : BaseViewModel
@@ -19,19 +19,7 @@ namespace MauiBankingExercise.ViewModels
 
         private BankingDatabaseService _bds;
 
-        private int _customerId;
-
-        public int CustomerId
-        {
-            get { return _customerId; }
-            set { _customerId = value;
-                OnPropertyChanged();
-                if (_customerId > 0 && _accountId > 0)
-                {
-                    GetAccountAndTransactions();
-                }
-            }
-        }
+        
 
         private int _accountId;
 
@@ -40,10 +28,7 @@ namespace MauiBankingExercise.ViewModels
             get { return _accountId; }
             set { _accountId = value;
                 OnPropertyChanged();
-                if (_customerId > 0 && _accountId > 0)
-                {
-                    GetAccountAndTransactions();
-                }
+                
             }
         }
 
@@ -53,8 +38,9 @@ namespace MauiBankingExercise.ViewModels
         {
             get { return _selectedAccount; }
             set { _selectedAccount = value;
-                OnPropertyChanged();
-                LoadTransactions();
+                OnPropertyChanged(nameof(SelectedAccount));
+
+                
             }
         }
 
@@ -77,6 +63,19 @@ namespace MauiBankingExercise.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private Transaction? _selectedTransaction;
+
+        public Transaction? SelectedTransaction
+        {
+            get { return _selectedTransaction; }
+            set 
+            { 
+                _selectedTransaction = value;
+                OnPropertyChanged(nameof(SelectedTransaction));
+            }
+        }
+
 
         private ObservableCollection<TransactionType> _transactionTypes = new ObservableCollection<TransactionType>();
 
@@ -118,17 +117,11 @@ namespace MauiBankingExercise.ViewModels
 
         private void LoadTransactions()
         {
+            var transactions = _bds.GetTransactionsByAccountId(AccountId);
             Transactions.Clear();
-            if (SelectedAccount?.Transactions != null)
+            foreach (var transaction in transactions)
             {
-
-                var sortedTransactions = SelectedAccount.Transactions
-                    .OrderByDescending(t => t.TransactionDate);
-
-                foreach (var transaction in sortedTransactions)
-                {
-                    Transactions.Add(transaction);
-                }
+                Transactions.Add(transaction);
             }
         }
 
@@ -149,7 +142,7 @@ namespace MauiBankingExercise.ViewModels
                 Amount = 0,
                 Description = ""
             };
-
+            _bds.AddTransaction(newTransaction);
             var param = new ShellNavigationQueryParameters()
             {
                 {"SelectedTransaction", newTransaction }
@@ -159,17 +152,14 @@ namespace MauiBankingExercise.ViewModels
             await AppShell.Current.GoToAsync($"addtransaction", param);
         }
 
-       /* public void RefreshTransactions()
-        {
-            Transactions = new ObservableCollection<Transaction>(_bds.Get)
-        }*/
+       
         public override void OnAppearing()
         {
+            
             base.OnAppearing();
-            if (CustomerId > 0 && AccountId > 0 && SelectedAccount == null)
-            {
-                GetAccountAndTransactions();
-            }
+            
+            LoadTransactions();
+            
         }
     } 
 }
