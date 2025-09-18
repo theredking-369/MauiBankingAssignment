@@ -5,7 +5,9 @@
              xmlns:views="clr-namespace:MauiBankingExercise.Views"
              xmlns:viewmodels="clr-namespace:MauiBankingExercise.ViewModels"
              xmlns:models="clr-namespace:MauiBankingExercise.Models"
-             Title="{Binding SelectedAccount.AccountNumber, StringFormat='Account: {0}'}" x:DataType="viewmodels:TransactionViewModel">
+             Title="{Binding SelectedAccount.AccountNumber, StringFormat='Account: {0}'}" 
+             x:DataType="viewmodels:TransactionViewModel">
+
     <views:BasePage.Resources>
         <Style TargetType="Border">
             <Setter Property="VisualStateManager.VisualStateGroups">
@@ -24,21 +26,61 @@
         </Style>
     </views:BasePage.Resources>
 
-    <CollectionView ItemsSource= "{Binding Transactions}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:Transaction">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
-                        ColumnDefinitions="*,Auto">
+    
+    <VerticalStackLayout Padding="10" Spacing="15">
 
-                <Label Text="{Binding Amount}" Grid.Row="0"/>
-                <Label Text="{Binding TransactionDate}" Grid.Row="1"/>
-                <Label Text="{Binding TransactionTypeId}" Grid.Row="2"/>
-                <Label Text="{Binding Description}" Grid.Row="4"/>
-                </Grid>
-                
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-        
-    </CollectionView>
+        <CollectionView ItemsSource="{Binding Transactions}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Transaction">
+                    <Border 
+                               Padding="15"
+                               Margin="0,5"
+                               BackgroundColor="#D1ECF1">
+                        <Grid ColumnDefinitions="Auto, *"
+                                  RowDefinitions="Auto, Auto, Auto">
 
+                            <!-- Amount -->
+                            <Label Text="{Binding Amount, StringFormat='R{0:F2}'}"
+                                       Grid.Column="0"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{Binding Amount, Converter={StaticResource AmountToColorConverter}}"
+                                       VerticalOptions="Start" />
+
+                            <!-- Description -->
+                            <Label Text="{Binding Description}"
+                                       Grid.Column="1"
+                                       FontSize="16"
+                                       TextColor="Black"
+                                       VerticalOptions="Start" />
+
+                            <!-- Date -->
+                            <Label Text="{Binding TransactionDate, StringFormat='{0:MMM dd, yyyy hh:mm tt}'}"
+                                       Grid.ColumnSpan="2"
+                                       Grid.Row="1"
+                                       FontSize="14"
+                                       TextColor="Gray"
+                                       Margin="0,5,0,0" />
+
+                            <!-- Transaction Id (optional) -->
+                            <Label Text="{Binding TransactionId}"
+                                       Grid.ColumnSpan="2"
+                                       Grid.Row="2"
+                                       FontSize="12"
+                                       TextColor="DarkGray" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Button below list -->
+        <Button Text="Add Transaction"
+                Command="{Binding AddTransactionCommand}"
+                BackgroundColor="LightSkyBlue"
+                TextColor="White"
+                CornerRadius="10"
+                HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
 </views:BasePage>

@@ -1,11 +1,12 @@
-﻿using SQLite;
+﻿
+using MauiBankingExercise.Models;
+using SQLite;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MauiBankingExercise.Models;
-using SQLiteNetExtensions.Extensions;
 
 namespace MauiBankingExercise.Services
 {
@@ -73,10 +74,40 @@ namespace MauiBankingExercise.Services
             return account;
         }
 
-        
+        public List<Transaction> _transactions = new List<Transaction>();
+        public List<TransactionType> GetTransactionTypes()
+        {
+            return  _dbConnection.Table<TransactionType>().ToList();
+        }
 
+        public List<Account> GetAccounts()
+        {
+            return _dbConnection.Table<Account>().ToList();
+        }
+
+        public string GetAccountNumber(int accountId)
+        {
+            var account = _dbConnection.Table<Account>()
+                                       .FirstOrDefault(x => x.AccountId == accountId);
+
+            return account?.AccountNumber; // will return null if not found
+        }
+
+        public Transaction GetTransactionById(int id)
+        {
+            var uniqueTransaction = _transactions.Where(x => x.TransactionId == id).FirstOrDefault();
+            return uniqueTransaction;
+        }
         public void AddTransaction(Transaction transaction)
         {
+           
+                var uniqueTransaction = GetTransactionById(transaction.TransactionId);
+                int pos = _transactions.IndexOf(uniqueTransaction);
+
+                _transactions[pos] = transaction;
+            
+            
+            
             _dbConnection.Insert(transaction);
         }
     }

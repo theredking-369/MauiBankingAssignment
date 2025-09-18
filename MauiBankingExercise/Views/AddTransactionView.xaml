@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MauiBankingExercise.ViewModels"
              x:Class="MauiBankingExercise.Views.AddTransactionView"
-             Title="AddTransactionView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="AddTransactionView" x:DataType="viewmodels:AddTransactionViewModel">
+    <ScrollView>
+        
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Add Transaction for Account :"  FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="{Binding SelectedAccount.AccountNumber}"/>
+
+
+            <Label Text="Type"/>
+            <Picker SelectedItem="{Binding SelectedTransactionType}"
+                    ItemsSource="{Binding TransactionTypes}"
+                    ItemDisplayBinding="{Binding Name}"/>
+
+            <Label Text="Amount"/>
+            <Entry Text="{Binding SelectedTransaction.Amount}"/>
+
+            <Label Text="Description"/>
+            <Entry Text="{Binding SelectedTransaction.Description}"/>
+
+            <Label Text="Date"/>
+            <DatePicker Date="{Binding SelectedTransaction.TransactionDate}" Format="yyyy"/>
+
+            <Button Text="Submit"  Command="{Binding SaveTransactionCommand}"/>
+            
+            
+        </VerticalStackLayout>
+        
+    </ScrollView>
 </ContentPage>
