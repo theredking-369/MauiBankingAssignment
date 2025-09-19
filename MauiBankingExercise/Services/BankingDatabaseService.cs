@@ -1,4 +1,4 @@
-﻿
+﻿using MauiBankingExercise.Interfaces;
 using MauiBankingExercise.Models;
 using SQLite;
 using SQLiteNetExtensions.Extensions;
@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace MauiBankingExercise.Services
 {
-    public class BankingDatabaseService
+    public class BankingDatabaseService : IBankService
     {
         private SQLiteConnection _dbConnection;
         
@@ -72,9 +72,9 @@ namespace MauiBankingExercise.Services
             return _dbConnection.Table<Bank>.ToList();
         }*/
 
-        public List<Customer> GetAllCustomers()
+        public Task<List<Customer>> GetAllCustomers()
         {
-            return _dbConnection.Table<Customer>().ToList();
+            return Task.FromResult(_dbConnection.Table<Customer>().ToList());
         }
 
         public List<Transaction> GetAllTransactions()
@@ -85,12 +85,12 @@ namespace MauiBankingExercise.Services
 
         
 
-        public Customer? GetCustomerByID(int id)
+        public Task<Customer> GetCustomerByID(int id)
         {
-            return _dbConnection.Table<Customer>().FirstOrDefault(x => x.CustomerId == id);
+            return Task.FromResult(_dbConnection.Table<Customer>().FirstOrDefault(x => x.CustomerId == id));
         }
 
-        public List<Account> GetAccountsByCustomerId(int customerId)
+        public Task<List<Account>> GetAccountsByCustomerId(int customerId)
         {
             var accounts = _dbConnection.Table<Account>()
                                .Where(a => a.CustomerId == customerId)
@@ -100,10 +100,10 @@ namespace MauiBankingExercise.Services
             {
                 _dbConnection.GetChildren(account);
             }
-            return accounts;
+            return Task.FromResult(accounts);
         }
 
-        public Account? GetAccountById(int accountId)
+        public Task<Account> GetAccountById(int accountId)
         {
             var account = _dbConnection.Table<Account>()
                             .FirstOrDefault(a => a.AccountId == accountId);
@@ -113,10 +113,10 @@ namespace MauiBankingExercise.Services
                 _dbConnection.GetChildren(account);
             }
 
-            return account;
+            return Task.FromResult(account);
         }
 
-        public List<Transaction> GetTransactionsByAccountId(int accountId)
+        public Task<List<Transaction>> GetTransactionsByAccountId(int accountId)
         {
             var transactions = _dbConnection.Table<Transaction>()
                 .Where(x => x.AccountId == accountId)
@@ -126,13 +126,13 @@ namespace MauiBankingExercise.Services
             {
                 _dbConnection.GetChildren(transaction);
             }
-            return transactions;
+            return Task.FromResult(transactions);
         }
 
 
-        public List<TransactionType> GetTransactionTypes()
+        public Task<List<TransactionType>> GetTransactionTypes()
         {
-            return  _dbConnection.Table<TransactionType>().ToList();
+            return  Task.FromResult(_dbConnection.Table<TransactionType>().ToList());
         }
 
         
@@ -167,15 +167,15 @@ namespace MauiBankingExercise.Services
             return Task.CompletedTask();            
         }*/
 
-        public void AddTransaction(Transaction transaction)
+        public Task AddTransaction(Transaction transaction)
         {
-            _dbConnection.Insert(transaction);
+            return Task.FromResult(_dbConnection.Insert(transaction));
             
         }
 
-        public void UpdateTransaction(Transaction transaction)
+        public Task UpdateTransaction(Transaction transaction)
         {
-            _dbConnection.Update(transaction);
+            return Task.FromResult(_dbConnection.Update(transaction));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MauiBankingExercise.Models;
+﻿using MauiBankingExercise.Interfaces;
+using MauiBankingExercise.Models;
 using MauiBankingExercise.Services;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,9 @@ namespace MauiBankingExercise.ViewModels
     {
 
 		public ICommand SaveTransactionCommand { get; }
-        private BankingDatabaseService _bds;
+        private IBankService _bds;
 
-        public AddTransactionViewModel(BankingDatabaseService bds)
+        public AddTransactionViewModel(IBankService bds)
         {
             _bds = bds;
             SaveTransactionCommand = new Command(async () => await SaveChanges());
@@ -29,8 +30,7 @@ namespace MauiBankingExercise.ViewModels
 
         private async Task SaveChanges()
         {
-            _bds.UpdateTransaction(SelectedTransaction);
-            await AppShell.Current.GoToAsync("..");
+            await _bds.UpdateTransaction(SelectedTransaction);
         }
 
         
@@ -140,7 +140,7 @@ namespace MauiBankingExercise.ViewModels
         private void Data()
         {
             var Customer = _bds.GetCustomerByID(CustomerId);
-            TransactionTypes = _bds.GetTransactionTypes();
+            var TransactionTypes = _bds.GetTransactionTypes();
             
 
         }

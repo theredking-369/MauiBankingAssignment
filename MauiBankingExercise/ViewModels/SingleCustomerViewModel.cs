@@ -1,4 +1,5 @@
-﻿using MauiBankingExercise.Models;
+﻿using MauiBankingExercise.Interfaces;
+using MauiBankingExercise.Models;
 using MauiBankingExercise.Services;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace MauiBankingExercise.ViewModels
     public class SingleCustomerViewModel : BaseViewModel
     {
         public ICommand AccountSelectedCommand { get; set; }
-        private BankingDatabaseService _bds;
+        private IBankService _bds;
 
         private Customer? _customer;
 
@@ -54,9 +55,9 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        private Account _selectedAccount;
+        private Account? _selectedAccount;
 
-        public Account SelectedAccount
+        public Account? SelectedAccount
         {
             get { return _selectedAccount; }
             set 
@@ -67,22 +68,25 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        private void LoadAccounts()
+        private async void LoadAccounts()
         {
-            var accounts = _bds.GetAccountsByCustomerId(CustomerId);
+            var accounts = await _bds.GetAccountsByCustomerId(CustomerId);
             CustomerAccounts.Clear();
-            foreach(var account in accounts)
+            if (accounts != null)
             {
-                CustomerAccounts.Add(account);
+                foreach (var account in accounts)
+                {
+                    CustomerAccounts.Add(account);
+                }
             }
         }
         private void GetCustomerData()
         {
-            Customer = _bds.GetCustomerByID(CustomerId);
+            var Customer = _bds.GetCustomerByID(CustomerId);
             LoadAccounts();
         }
 
-        public SingleCustomerViewModel(BankingDatabaseService bds)
+        public SingleCustomerViewModel(IBankService bds)
         {
             _bds = bds;
             AccountSelectedCommand = new Command(AccountSelected);

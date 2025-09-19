@@ -8,13 +8,14 @@ using System.Windows.Input;
 using MauiBankingExercise.Services;
 using MauiBankingExercise.Models;
 using System.Collections.ObjectModel;
+using MauiBankingExercise.Interfaces;
 
 namespace MauiBankingExercise.ViewModels
 {
     public class AllCustomersViewModel : BaseViewModel
     {
         public ICommand CustomerSelectedCommand { get; }
-        private BankingDatabaseService _bds;
+        private IBankService _bds;
 
         private ObservableCollection<Customer> _customers = new ObservableCollection<Customer>();
 
@@ -44,7 +45,7 @@ namespace MauiBankingExercise.ViewModels
 
 
 
-        public AllCustomersViewModel(BankingDatabaseService bds)
+        public AllCustomersViewModel(IBankService bds)
         {
             _bds = bds;
             CustomerSelectedCommand = new Command(CustomerSelected);
@@ -65,22 +66,17 @@ namespace MauiBankingExercise.ViewModels
             
         }
 
-        private void LoadCustomers()
+        private async void LoadCustomers()
         {
-            try
-            {
-                var customers = _bds.GetAllCustomers();
+           
+                var customers = await _bds.GetAllCustomers();
                 Customers.Clear();
 
                 foreach (var customer in customers)
                 {
                     Customers.Add(customer);
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error loading customers: {ex.Message}");
-            }
+            
         }
 
         public override void OnAppearing()

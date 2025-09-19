@@ -36,6 +36,30 @@ namespace BankingApi.Controllers
             return Ok(transactionTypes);
         }
 
+        //PUT: api/Transation/{accountId}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTransaction(int id, Transaction transaction)
+        {
+            if (id != transaction.AccountId)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(transaction).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                if (!await TransactionExists(id))
+                    return NotFound();
+                throw;
+            }
+            return NoContent();
+        }
+
         // POST: api/transactions
         [HttpPost]
         public async Task<ActionResult<Transaction>> CreateTransaction(Transaction transaction)
@@ -92,6 +116,12 @@ namespace BankingApi.Controllers
 
             return Ok(transaction);
         }
+
+
+        private async Task<bool> TransactionExists(int id)
+        {
+            return await _context.Transactions.AnyAsync(t => t.AccountId == id);
+        }
     }
 
     public class WithdrawalValidationRequest
@@ -99,4 +129,7 @@ namespace BankingApi.Controllers
         public int AccountId { get; set; }
         public decimal Amount { get; set; }
     }
+
+
+    
 }

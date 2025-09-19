@@ -3,6 +3,8 @@ using MauiBankingExercise.Services;
 using MauiBankingExercise.ViewModels;
 using MauiBankingExercise.Views;
 using Microsoft.Extensions.Logging;
+using MauiBankingExercise.Interfaces;
+using MauiBankingExercise.Configuration;
 
 namespace MauiBankingExercise
 {
@@ -23,7 +25,8 @@ namespace MauiBankingExercise
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddSingleton<BankingDatabaseService>();
+            builder.Services.AddSingleton<IBankService, BankApiService>();
+            builder.Services.AddSingleton<ApplicationSettings>();
 
             builder.Services.AddTransient<AllCustomersViewModel>();
             builder.Services.AddTransient<SingleCustomerViewModel>();
@@ -35,6 +38,8 @@ namespace MauiBankingExercise
             builder.Services.AddTransient<SingleCustomerView>();
             builder.Services.AddTransient<TransactionView>();
             builder.Services.AddTransient<AddTransactionView>();
+
+
 
             return builder.Build();
         }

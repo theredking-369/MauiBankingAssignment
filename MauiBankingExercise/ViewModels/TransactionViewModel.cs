@@ -1,6 +1,7 @@
 ﻿using MauiBankingExercise.Models;
 using MauiBankingExercise.Services;
 using System;
+using MauiBankingExercise.Interfaces;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace MauiBankingExercise.ViewModels
     {
         public ICommand AddTransactionCommand { get; }
 
-        private BankingDatabaseService _bds;
+        private IBankService _bds;
 
         
 
@@ -109,15 +110,15 @@ namespace MauiBankingExercise.ViewModels
             if (AccountId > 0)
             {
 
-                SelectedAccount = _bds.GetAccountById(AccountId);
+                var SelectedAccount = _bds.GetAccountById(AccountId);
             }
 
 
         }
 
-        private void LoadTransactions()
+        private async void LoadTransactions()
         {
-            var transactions = _bds.GetTransactionsByAccountId(AccountId);
+            var transactions = await _bds.GetTransactionsByAccountId(AccountId);
             Transactions.Clear();
             foreach (var transaction in transactions)
             {
@@ -125,7 +126,7 @@ namespace MauiBankingExercise.ViewModels
             }
         }
 
-        public TransactionViewModel(BankingDatabaseService bds)
+        public TransactionViewModel(IBankService bds)
         {
             _bds = bds;
             AddTransactionCommand = new Command(AddTransaction);
@@ -142,7 +143,7 @@ namespace MauiBankingExercise.ViewModels
                 Amount = 0,
                 Description = ""
             };
-            _bds.AddTransaction(newTransaction);
+           await  _bds.AddTransaction(newTransaction);
             var param = new ShellNavigationQueryParameters()
             {
                 {"SelectedTransaction", newTransaction }
