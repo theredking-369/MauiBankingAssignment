@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MauiBankingExercise.Models
 {
@@ -25,4 +26,5 @@ namespace MauiBankingExercise.Models
         [ManyToOne]
         public TransactionType TransactionType { get; set; }
     }
+
 }

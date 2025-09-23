@@ -141,7 +141,7 @@ namespace MauiBankingExercise.Services
 
         public async Task AddTransaction(Transaction transaction)
         {
-            Uri uri = new Uri($"{_apps.ServiceUrl}/{transaction}/{transaction.AccountId}");
+            Uri uri = new Uri($"{_apps.ServiceUrl}/transactions");
 
             try
             {

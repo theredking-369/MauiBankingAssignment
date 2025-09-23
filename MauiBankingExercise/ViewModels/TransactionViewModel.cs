@@ -134,23 +134,33 @@ namespace MauiBankingExercise.ViewModels
 
         private async void AddTransaction(object obj)
         {
-            //create empty transaction
-            var newTransaction = new Transaction
+            try
             {
-                TransactionId = 0,
-                AccountId = AccountId,
-                TransactionDate = DateTime.Now,
-                Amount = 0,
-                Description = ""
-            };
-           await  _bds.AddTransaction(newTransaction);
-            var param = new ShellNavigationQueryParameters()
+
+                //create empty transaction
+                var newTransaction = new Transaction
+                {
+
+                    TransactionId = 1,
+                    AccountId = AccountId,
+                    TransactionDate = DateTime.Now,
+                    Amount = 1,
+                    Description = "New Transaction",
+
+                };
+                await _bds.AddTransaction(newTransaction);
+                var param = new ShellNavigationQueryParameters()
             {
                 {"SelectedTransaction", newTransaction }
-                
+
             };
 
-            await AppShell.Current.GoToAsync($"addtransaction", param);
+                await AppShell.Current.GoToAsync($"addtransaction", param);
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
        
